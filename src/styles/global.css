@@ -1,0 +1,153 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;600;700&display=swap');
+
+:root {
+  font-family: 'DM Sans', 'Noto Sans SC', sans-serif;
+  color: #1f2937;
+  background: #f5f7fb;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  --primary: #2563eb;
+  --sidebar: #12233f;
+  --muted: #8a96a8;
+  --border: #e8edf4;
+}
+
+* { box-sizing: border-box; }
+body { margin: 0; min-width: 1100px; background: #f5f7fb; }
+button, input, textarea { font-family: inherit; }
+#app { min-height: 100vh; }
+.app-shell { min-height: 100vh; }
+/* 侧栏在文档流里只占 76px；真正变宽的是内层 .rail，它脱离流浮在内容之上，所以表格宽度恒定 */
+.app-sidebar { position: relative; background: #fff; border-right: 1px solid var(--border); color: #64748b; overflow: visible; z-index: 30; }
+/* 用 absolute 而不是 fixed：页面横向滚动时侧栏跟着一起走，不会和内容错位 */
+.rail { position: absolute; top: 0; bottom: 0; left: 0; width: 76px; z-index: 30; display: flex; flex-direction: column; background: #fff; border-right: 1px solid var(--border); overflow: hidden; transition: width .2s ease; }
+.rail.is-open { width: 236px; box-shadow: 12px 0 32px rgba(15,23,42,.09); }
+.brand { height: 82px; flex: 0 0 82px; display: flex; align-items: center; gap: 12px; padding: 0 20px; overflow: hidden; }
+.brand-mark { width: 36px; height: 36px; flex: 0 0 36px; border-radius: 10px; display: grid; place-items: center; background: #2563eb; color: white; font-size: 19px; font-weight: 700; }
+.brand-copy { display: flex; flex-direction: column; gap: 3px; white-space: nowrap; }
+.brand-copy strong { color: #172033; font-size: 17px; letter-spacing: .5px; }
+.brand-copy span { color: #94a3b8; font-size: 11px; }
+/* 展开时侧栏盖住顶栏左侧，所以折叠按钮在栏内再给一个，否则展开态没地方收起 */
+.rail-toggle { margin-left: auto; width: 28px; height: 28px; flex: 0 0 28px; border: 0; border-radius: 6px; background: transparent; color: #94a3b8; display: grid; place-items: center; cursor: pointer; font: inherit; }
+.rail-toggle:hover { background: #f1f5f9; color: #172033; }
+/* 窄栏与宽栏两套 DOM 叠在同一位置，靠 .is-open 切换，图标不会因为变宽而位移 */
+.nav-rail, .nav-full { position: absolute; top: 82px; bottom: 0; left: 0; padding: 12px 0 16px; overflow-y: auto; overflow-x: hidden; }
+.nav-rail { width: 76px; display: flex; flex-direction: column; align-items: center; gap: 4px; }
+.nav-full { width: 236px; padding: 14px 0 20px; }
+.rail.is-open .nav-rail, .rail:not(.is-open) .nav-full { opacity: 0; pointer-events: none; }
+.rail-link { width: 48px; height: 48px; flex: 0 0 48px; border: 0; border-radius: 10px; background: transparent; color: #55637a; display: flex; align-items: center; justify-content: center; cursor: pointer; font: inherit; }
+.rail-link:hover { background: #f4f7fc; color: #172033; }
+.rail-link.is-active { background: #eff6ff; color: #2563eb; }
+.rail-link .el-icon { font-size: 19px; }
+.rail-link span { display: none; }
+.nav-link { position: relative; display: block; width: calc(100% - 20px); margin: 2px 10px; padding: 9px 12px 9px 16px; border: 0; border-radius: 8px; background: transparent; color: #55637a; font: inherit; font-size: 14px; text-align: left; cursor: pointer; transition: background .15s ease, color .15s ease; }
+.nav-link--top { margin-top: 0; }
+.nav-link:hover { background: #f4f7fc; color: #172033; }
+/* 选中态：淡蓝底 + 蓝字 + 左侧竖条，去掉实心块和阴影，视觉重量最低 */
+.nav-link.is-active { color: #2563eb; background: #eff6ff; font-weight: 600; }
+.nav-link.is-active::before { content: ''; position: absolute; left: 5px; top: 50%; width: 3px; height: 16px; border-radius: 2px; background: #2563eb; transform: translateY(-50%); }
+.nav-link:disabled { color: #c2cad6; cursor: default; background: transparent; }
+.nav-group { margin-top: 12px; }
+.nav-caption { padding: 0 22px 4px; color: #a3aec0; font-size: 11px; letter-spacing: 1px; }
+.main-container { min-width: 0; }
+.app-header { height: 82px; background: white; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; padding: 0 34px; }
+.header-left, .header-right { display: flex; align-items: center; }
+.collapse-button { color: #64748b; margin-right: 16px; }
+.header-location { color: #64748b; font-size: 13px; }
+.header-right { gap: 14px; }
+.header-date { color: #94a3b8; font-size: 13px; }
+.user-avatar { background: #dbeafe; color: #2563eb; }
+.user-info { display: flex; flex-direction: column; gap: 2px; font-size: 12px; }
+.user-info span { color: #94a3b8; font-size: 11px; }
+.app-content { padding: 34px; }
+.page-view { max-width: 1500px; margin: 0 auto; }
+.page-heading { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 28px; }
+.page-heading h1 { margin: 0 0 8px; color: #172033; font-size: 26px; letter-spacing: -.5px; }
+.page-heading p { margin: 0; color: #8995a8; font-size: 13px; }
+.page-heading .el-button { border-radius: 7px; padding: 12px 20px; }
+.stat-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; margin-bottom: 22px; }
+.stat-card { background: white; border: 1px solid var(--border); border-radius: 10px; padding: 20px 22px; display: flex; align-items: center; gap: 15px; }
+.stat-card > div:last-child { display: flex; flex-direction: column; gap: 6px; }
+.stat-card span { color: #94a3b8; font-size: 12px; }
+.stat-card strong { color: #1e293b; font-size: 25px; line-height: 1; }
+.stat-icon { width: 42px; height: 42px; border-radius: 10px; display: grid; place-items: center; font-size: 20px; }
+.stat-icon--blue { color: #2563eb; background: #eff6ff; }
+.stat-icon--green { color: #16a34a; background: #f0fdf4; }
+.stat-icon--orange { color: #ea580c; background: #fff7ed; }
+.content-card { border: 1px solid var(--border); border-radius: 10px; }
+.content-card .el-card__body { padding: 0; }
+.filter-bar { padding: 20px; display: flex; gap: 12px; border-bottom: 1px solid #eef2f7; }
+.filter-bar .el-input, .filter-bar .el-select { width: 190px; }
+.filter-bar .keyword-input { width: 290px; }
+.product-table { color: #475569; }
+.product-table .el-table__header th { background: #fbfcfe; color: #64748b; font-weight: 600; font-size: 12px; height: 48px; }
+.product-table .el-table__row td { height: 76px; }
+.product-cell { display: flex; align-items: center; gap: 13px; }
+.product-thumb { width: 46px; height: 46px; flex: 0 0 46px; border-radius: 8px; overflow: hidden; cursor: pointer; background: #eef4ff; display: grid; place-items: center; color: #7ba3ee; font-size: 20px; }
+.product-thumb img { width: 100%; height: 100%; object-fit: cover; }
+.product-copy { display: flex; flex-direction: column; gap: 5px; min-width: 0; }
+.product-copy strong { color: #25324a; font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.product-copy span { color: #a0aabd; font-size: 11px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.cost-value { color: #1e293b; font-weight: 600; font-variant-numeric: tabular-nums; }
+.supplier-summary { color: #475569; cursor: help; }
+.supplier-summary small { display: block; max-width: 150px; margin-top: 4px; color: #a0aabd; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.table-footer { min-height: 64px; padding: 0 20px; display: flex; justify-content: space-between; align-items: center; color: #94a3b8; font-size: 12px; }
+.product-form .el-input-number, .full-width { width: 100%; }
+.upload-area { width: 100%; }
+.upload-placeholder, .upload-preview { width: 130px; height: 130px; border: 1px dashed #c9d5e5; border-radius: 8px; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 7px; color: #7990ad; cursor: pointer; background: #fbfdff; }
+.upload-placeholder .el-icon { font-size: 25px; color: #6d9be8; }
+.upload-placeholder small { color: #a6b2c2; font-size: 10px; }
+.upload-preview { position: relative; overflow: hidden; padding: 0; }
+.upload-preview img { width: 100%; height: 100%; object-fit: cover; }
+.upload-preview span { position: absolute; inset: auto 0 0; padding: 6px; color: white; text-align: center; font-size: 11px; background: rgba(0,0,0,.48); }
+.inquiry-table-wrap { padding-bottom: 8px; }
+.large-preview { display: block; max-width: 100%; max-height: 65vh; margin: 0 auto; object-fit: contain; }
+.block-muted { display: block; margin-top: 4px; color: #94a3b8; font-size: 11px; }
+.form-image { width: 90px; height: 90px; margin-left: 14px; border-radius: 8px; object-fit: cover; }
+.quote-table-header { display: flex; justify-content: space-between; align-items: center; margin: 8px 0 12px; }
+.quote-total { padding: 18px 8px; text-align: right; color: #64748b; }
+.quote-total strong { color: #1d4ed8; font-size: 20px; }
+.document-preview { min-height: 680px; padding: 40px; color: #1f2937; background: white; border: 1px solid #dfe5ee; }
+.document-actions { display: flex; justify-content: flex-end; margin-bottom: 24px; }
+.document-preview h2 { margin: 10px 0 18px; color: #172033; text-align: center; letter-spacing: 1px; }
+.document-meta { display: flex; justify-content: space-between; padding-bottom: 16px; border-bottom: 2px solid #172033; color: #64748b; font-size: 13px; }
+.document-customer { margin: 24px 0; font-size: 13px; line-height: 1.5; }
+.document-customer p { margin: 4px 0; }
+.document-preview table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.document-preview th, .document-preview td { padding: 12px 10px; border: 1px solid #d9e0ea; text-align: left; }
+.document-preview th { background: #f5f7fb; }
+.document-preview h3 { margin: 22px 0; text-align: right; }
+.document-summary { display: flex; justify-content: space-between; align-items: center; margin-top: 24px; padding-top: 16px; border-top: 2px solid #172033; }
+.payment-note { margin-top: 30px; white-space: pre-wrap; }
+@media print {
+  body { min-width: 0; background: white; }
+  .app-sidebar, .rail, .app-header, .document-actions, .el-overlay, .el-dialog__header, .el-dialog__footer { display: none !important; }
+  .app-content { padding: 0; }
+  .document-preview { border: 0; min-height: 0; padding: 24mm 18mm; }
+}
+@media (max-width: 1280px) {
+  .app-content { padding: 25px; }
+  .filter-bar { flex-wrap: wrap; }
+  .filter-bar .keyword-input { width: 100%; }
+}
+
+/* 表头固定单行：防止“文字 + 排序箭头”宽度不足时被挤成上下两行 */
+.el-table th.el-table__cell .cell {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.el-table th.el-table__cell > .cell {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.el-table th.el-table__cell .caret-wrapper {
+  flex-shrink: 0;
+}
+.el-table th.el-table__cell .cell > span {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
